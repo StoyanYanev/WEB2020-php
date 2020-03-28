@@ -7,16 +7,6 @@ function validate() {
     let isValidPass = isValidPassword(password);
     let isValidConfirmPass = isValidConfirmPassword(confirmPassword, password);
 
-    // if (isValidUsern) {
-    //     hideErrorMessag("invalidUsername");
-    // }
-    // if (isValidPass) {
-    //     hideErrorMessag("invalidPassword");
-    // }
-    // if (isValidConfirmPass) {
-    //     hideErrorMessag("invalidConfirmPassword");
-    // }
-
     return isValidUsern && isValidPass && isValidConfirmPass;
 }
 function hideErrorMessag(elementName) {
