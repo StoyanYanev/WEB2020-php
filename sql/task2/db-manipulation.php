@@ -1,8 +1,13 @@
 <?php
 
+$configs = include('configuration_properties.php');
+$table_name = $configs['table_name'];
+
 function addElactive($subjectName, $lecturerName, $description)
 {
-  $insertStatment = "INSERT INTO electives (title, description, lecturer) 
+  global $table_name;
+
+  $insertStatment = "INSERT INTO global $table_name (title, description, lecturer) 
               VALUES 
                 (:title, :description, :teacher)";
 
@@ -16,7 +21,9 @@ function addElactive($subjectName, $lecturerName, $description)
 
 function updateElective($subjectName, $lecturerName, $description, $electiveId)
 {
-  $updateStatement = "UPDATE electives 
+  global $table_name;
+  
+  $updateStatement = "UPDATE $table_name 
               SET 
                 title = :titlePlaceholder, description = :descriptionPlaceholder, lecturer = :lecturerPlaceholder
               WHERE id=:electiveId;";
@@ -32,7 +39,8 @@ function updateElective($subjectName, $lecturerName, $description, $electiveId)
 
 function getEletiveById($electiveId)
 {
-  $selectStatment = "SELECT * FROM electives
+  global $table_name;
+  $selectStatment = "SELECT * FROM $table_name
               WHERE id=:electiveId";
 
   $connection = getConnectionWithDatabase();
@@ -45,10 +53,11 @@ function getEletiveById($electiveId)
 }
 function getConnectionWithDatabase()
 {
-  $host = "localhost";
-  $username = "root";
-  $password = "";
-  $dbname = "test";
+  global $configs;
+  $host = $configs['host'];
+  $dbname = $configs['database_name'];
+  $username = $configs['username'];
+  $password = $configs['password'];
 
   try{
     $connection = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);

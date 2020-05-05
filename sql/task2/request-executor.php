@@ -17,15 +17,23 @@ if ($_POST) {
 
 function executePostRequest($electiveId)
 {
+
   $subjectName = $_POST['subjectName'];
   $lecturerName = $_POST['lecturerName'];
   $description = $_POST['description'];
-  validateElectiveFields($subjectName, $lecturerName, $description);
-  echo("-----------");
+
+  $errors = array();
+  validateElectiveField($subjectName, MAX_SUBJECT_NAME_LENGTH, $errors);
+  validateElectiveField($lecturerName, MAX_LECTURE_NAME_LENGTH, $errors);
+  validateElectiveField($description, MAX_DESCRIPTION_LENGTH, $errors);
+
+  if (count($errors) != 0) {
+    die();
+  }
+
   if (is_null($electiveId)) {
     createNewElective($subjectName, $lecturerName, $description);
   } else {
-    echo("dasdasd2222");
     updateExistingElective($subjectName, $lecturerName, $description, $electiveId);
   }
 }
@@ -59,55 +67,14 @@ function checkIfElectiveExsists($electiveId)
   }
 }
 
-function validateElectiveFields($subjectName, $lecturerName, $description)
+function validateElectiveField(String $formField, int $maxLength, &$errors)
 {
-  $errors = array();
-  validateSubjectName($subjectName, $errors);
-  validateLectureName($lecturerName, $errors);
-  validateDescriptionOfSubject($description, $errors);
-
-  if (count($errors) == 0) {
-    die();
+  if (!$formField) {
+    $errors["$formField"] = "Полето е задължително.";
+  } elseif (strlen($formField) > $maxLength) {
+    $errors["$formField"] = "Полето има максимална дължина $maxLength символа.";
   }
-}
-
-function validateSubjectName($subjectName, $errors)
-{
-  if (!$subjectName) {
-    $errors['subjectName'] = 'Името на предмета е задължително поле.';
-  } elseif (strlen($subjectName) > MAX_SUBJECT_NAME_LENGTH) {
-    $errors['subjectName'] = 'Името на предмета трябва да е по-малко от 128 символа.';
-  }
-
-  if (array_key_exists('subjectName', $errors)) {
-    echo $errors['subjectName'];
-  }
-}
-
-function validateLectureName($lecturerName, $errors)
-{
-  if (!$lecturerName) {
-    $errors['lecturerName'] = 'Името на лектора е задължително поле.';
-  } elseif (strlen($lecturerName) > MAX_LECTURE_NAME_LENGTH) {
-    $errors['lecturerName'] = 'Името на лектора трябва да е по-малко от 128 символа.';
-  }
-
-  if (array_key_exists('lecturerName', $errors)) {
-    echo $errors['lecturerName'];
-  }
-}
-
-function validateDescriptionOfSubject($description, $errors)
-{
-  if (!$description) {
-    $errors['description'] = 'Описанието на предмета е задължително поле.';
-  } elseif (strlen($description) < MIN_DESCRIPTION_LENGTH) {
-    $errors['description'] = 'Описанието на предмета трябва да е по-голямо от 10 символа.';
-  } elseif (strlen($description) > MAX_DESCRIPTION_LENGTH) {
-    $errors['description'] = 'Описанието на предмета трябва да е по-малко от 1024 символа.';
-  }
-
-  if (array_key_exists('description', $errors)) {
-    echo $errors['description'];
+  if (array_key_exists($formField, $errors)) {
+    echo $errors[$formField];
   }
 }
